@@ -30,9 +30,9 @@ class DisplaceLogo:
 
         # Remove batch dimensions if present
         if logo.ndim == 4:
-            logo = logo[0]
+            logo = logo[0]  # Remove batch dimension
         if displacement_map.ndim == 4:
-            displacement_map = displacement_map[0]
+            displacement_map = displacement_map[0]  # Remove batch dimension
 
         # Ensure the displacement map is single-channel (grayscale)
         if displacement_map.shape[0] == 3:
@@ -40,11 +40,14 @@ class DisplaceLogo:
         else:
             displacement_map = displacement_map[0]  # Use the first channel
 
+        # Resize the displacement map to match the logo's dimensions
+        height, width, channels = logo.shape
+        displacement_map = np.array(Image.fromarray(displacement_map).resize((width, height), Image.BILINEAR))
+
         # Scale displacement map
         displacement_map = displacement_map * scale
 
         # Create grid for displacement
-        height, width = logo.shape[1], logo.shape[2]
         x, y = np.meshgrid(np.arange(width), np.arange(height))
 
         # Apply displacement
