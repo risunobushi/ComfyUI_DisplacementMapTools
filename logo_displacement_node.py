@@ -59,10 +59,10 @@ class DisplaceLogo:
         new_y = new_y / (height - 1) * 2 - 1
 
         # Stack to create grid tensor
-        grid = torch.stack([torch.tensor(new_x), torch.tensor(new_y)], dim=-1).unsqueeze(0)
+        grid = torch.stack([torch.tensor(new_x, dtype=torch.float32), torch.tensor(new_y, dtype=torch.float32)], dim=-1).unsqueeze(0)
 
         # Convert logo to tensor and apply grid_sample
-        logo_tensor = torch.from_numpy(logo).permute(2, 0, 1).unsqueeze(0)
+        logo_tensor = torch.from_numpy(logo).permute(2, 0, 1).unsqueeze(0).float()
         displaced_logo = F.grid_sample(logo_tensor, grid, mode='bilinear', padding_mode='border', align_corners=True)
 
         # Convert back to ComfyUI format
